@@ -20,7 +20,7 @@ pipeline {
             steps {
                 dir('5-jenkins'){
                     sh 'terraform --version'
-                    sh "terraform init -backend-config=backend.txt"
+                    sh "terraform init -backend-config=backend-config.txt"
                     sh "echo \$PWD"
                     sh "whoami"
                 }
