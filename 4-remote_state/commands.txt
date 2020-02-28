@@ -1,0 +1,8 @@
+# Get the Object ID of the Jenkins VM from the Identity category of the VM
+
+terraform init
+terraform plan -var jenkins_object_id=JENKINS_OBJECT_ID -out remote_state.tfplan
+terraform apply "remote_state.tfplan"
+
+# Copy the backend-config.txt file to the 5-jenkins directory
+cp backend-config.txt ../5-jenkins/

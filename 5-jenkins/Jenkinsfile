@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+    tools {
+        "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform"
+    }
+    parameters {
+        string(name: 'WORKSPACE', defaultValue: 'development', description:'worspace to use in Terraform')
+    }
+    environment {
+        TF_HOME = tool('terraform')
+        TF_IN_AUTOMATION = "true"
+        PATH = "$TF_HOME:$PATH"
+        ARM_SUBSCRIPTION_ID = credentials('arm_subscription')
+        ARM_TENANT_ID = credentials('arm_tenant_id')
+        ARM_USE_MSI = "true"
+        VAR_FILE_NAME = "terraform.jenkins"
+    }
+    stages {
+        stage('NetworkInit'){
+            steps {
+                dir('5-jenkins'){
+                    sh 'terraform --version'
+                    sh "terraform init -backend-config=backend.txt"
+                    sh "echo \$PWD"
+                    sh "whoami"
+                }
+            }
+        }
+        stage('NetworkPlan'){
+            steps {
+                dir('5-jenkins'){
+                    script {
+                        try {
+                           sh "terraform workspace new ${params.WORKSPACE}"
+                        } catch (err) {
+                            sh "terraform workspace select ${params.WORKSPACE}"
+                        }
+                        sh "terraform plan -var-file=$VAR_FILE_NAME -out terraform-networking.tfplan;echo \$? > status"
+                        stash name: "terraform-networking-plan", includes: "terraform-networking.tfplan"
+                    }
+                }
+            }
+        }
+        stage('NetworkApply'){
+            steps {
+                script{
+                    def apply = false
+                    try {
+                        input message: 'confirm apply', ok: 'Apply Config'
+                        apply = true
+                    } catch (err) {
+                        apply = false
+                        dir('5-jenkins'){
+                            sh "terraform destroy -var-file=$VAR_FILE_NAME -force"
+                        }
+                        currentBuild.result = 'UNSTABLE'
+                    }
+                    if(apply){
+                        dir('5-jenkins'){
+                            unstash "terraform-networking-plan"
+                            sh 'terraform apply terraform-networking.tfplan'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

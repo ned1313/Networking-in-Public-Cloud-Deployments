@@ -1,0 +1,5 @@
+resource_group_name = "terraform-state"
+storage_account_name = "pcd11874"
+container_name = "terraform-state"
+key = "terraform.tfstate"
+use_msi = true

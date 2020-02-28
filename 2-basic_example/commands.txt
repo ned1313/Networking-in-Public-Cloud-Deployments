@@ -1,0 +1,13 @@
+az account show
+az account set --subscription SUB_NAME
+
+terraform init
+terraform validate
+terraform fmt
+terraform plan -var resource_group_name=basic-vnet -out vnet.tfplan
+terraform apply "vnet.tfplan"
+
+terraform plan -var resource_group_name=basic-vnet -var-file update.tfvars -out vnet.tfplan
+terraform apply "vnet.tfplan"
+
+terraform destroy -var resource_group_name=basic-vnet -var-file update.tfvars

@@ -1,0 +1,27 @@
+ssh -L 127.0.0.1:8080:localhost:8080 nedadmin@jenkins1313.eastus.cloudapp.azure.com
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+# Install suggested plugins
+# Create a user
+# Manage jenkins
+# Manage plugins
+# Search for Terraform in Available and install without restart
+# Back to Manage jenkins
+# Global Tool Configuration
+# Add Terraform
+# Name: terraform 
+# Install automatically
+# Version - latest for linux (amd64)
+# Click Save
+# Create a new item
+# Name: net-deploy
+# Type pipeline
+# Select poll SCM
+# Definition: Pipeline script from SCM
+# SCM: Git
+# Repo URL: https://github.com/ned1313/Networking-in-Public-Cloud-Deployments.git
+# Script path: 5-jenkins/Jenkinsfile
+# Go to credentials -> global
+# Create a credential of type secret text called arm_subscription with your sub ID
+# Create a credential called arm_tenant_id with your tenant ID
+
