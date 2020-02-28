@@ -24,4 +24,8 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 # Go to credentials -> global
 # Create a credential of type secret text called arm_subscription with your sub ID
 # Create a credential called arm_tenant_id with your tenant ID
+# Generate a build of the pipeline
 
+# Configure SCM poll schedule of */2 * * * *
+# Make a change to the terraform.jenkins file, commit, and push
+# View deploy of updated config through pipeline

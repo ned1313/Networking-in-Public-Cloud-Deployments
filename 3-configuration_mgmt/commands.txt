@@ -1,0 +1,4 @@
+terraform init
+terraform validate
+terraform plan -var resource_group_name=basic-vnet -out config.tfplan
+terraform apply "config.tfplan"
