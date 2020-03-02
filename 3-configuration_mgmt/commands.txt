@@ -1,4 +1,6 @@
 terraform init
+terraform workspace new dev
+
 terraform validate
-terraform plan -var resource_group_name=basic-vnet -out config.tfplan
+terraform plan -out config.tfplan
 terraform apply "config.tfplan"
